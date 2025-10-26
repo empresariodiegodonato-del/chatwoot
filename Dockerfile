@@ -1,5 +1,5 @@
-# Usa Ruby 3.2 e Node 18, que o Chatwoot precisa
-FROM ruby:3.2
+# Usa Ruby e Node
+FROM ruby:3.2.2
 
 # Instala dependências do sistema
 RUN apt-get update -qq && apt-get install -y \
@@ -11,23 +11,23 @@ RUN apt-get update -qq && apt-get install -y \
   git \
   curl
 
-# Define o diretório de trabalho
+# Define diretório de trabalho
 WORKDIR /app
 
 # Copia os arquivos do projeto
 COPY . .
 
-# Instala as gems
+# Instala gems
 RUN gem install bundler && bundle install
 
 # Instala dependências JS
 RUN yarn install --frozen-lockfile
 
-# Prepara o build
-RUN yarn build
+# Compila assets
+RUN RAILS_ENV=production bundle exec rails assets:precompile
 
-# Expõe a porta padrão
+# Expõe a porta
 EXPOSE 3000
 
-# Comando pra iniciar o Chatwoot
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+# Comando para iniciar o Chatwoot
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
