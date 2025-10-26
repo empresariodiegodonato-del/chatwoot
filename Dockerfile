@@ -6,10 +6,11 @@ RUN apt-get update -qq && apt-get install -y \
   libpq-dev \
   curl
 
-# Instala Node.js 16 e Yarn (versões compatíveis com Chatwoot)
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+# Instala Node.js 18 e habilita Corepack (Yarn 3)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
   && apt-get install -y nodejs \
-  && npm install -g yarn
+  && corepack enable \
+  && corepack prepare yarn@stable --activate
 
 WORKDIR /app
 
@@ -17,6 +18,9 @@ COPY . .
 
 RUN gem install bundler:2.3.26
 RUN bundle install
+
+# Garante Yarn 3 compatível com o Chatwoot
+RUN yarn set version stable
 RUN yarn install
 
 EXPOSE 3000
