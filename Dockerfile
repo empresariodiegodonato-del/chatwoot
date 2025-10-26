@@ -1,33 +1,20 @@
-# Usa Ruby e Node
-FROM ruby:3.2.2
+FROM ruby:3.0.4
 
-# Instala dependências do sistema
-RUN apt-get update -qq && apt-get install -y \
-  build-essential \
-  libpq-dev \
-  nodejs \
-  yarn \
-  imagemagick \
-  git \
-  curl
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client yarn
 
-# Define diretório de trabalho
 WORKDIR /app
-
-# Copia os arquivos do projeto
 COPY . .
 
-# Instala gems
-RUN gem install bundler && bundle install
+RUN gem install bundler -v 2.3.26
+RUN bundle install
+RUN yarn install --check-files
 
-# Instala dependências JS
-RUN yarn install --frozen-lockfile
+ENV RAILS_ENV=production
+ENV NODE_ENV=production
+ENV PORT=3000
 
-# Compila assets
-RUN RAILS_ENV=production bundle exec rails assets:precompile
+RUN bundle exec rake assets:precompile
 
-# Expõe a porta
 EXPOSE 3000
 
-# Comando para iniciar o Chatwoot
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
