@@ -3,6 +3,8 @@
   "version": "2.19.0",
   "private": true,
   "scripts": {
+    "build": "vite build",
+    "start": "vite preview",
     "lint": "eslint 'app/javascript/**/*.{js,jsx,vue}'",
     "lint:fix": "eslint 'app/javascript/**/*.{js,jsx,vue}' --fix",
     "test": "jest"
