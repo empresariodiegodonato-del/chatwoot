@@ -1,22 +1,24 @@
-# Stage 1 - Build
+# Stage 1: Build
 FROM node:18-alpine AS builder
 WORKDIR /app
 
+RUN npm install -g pnpm
+
 COPY package*.json ./
-RUN npm install
+RUN pnpm install
 
 COPY . .
-RUN pnpm install && pnpm run build
+RUN pnpm run build
 
-# Stage 2 - Run
+# Stage 2: Run
 FROM node:18-alpine
 WORKDIR /app
 
+RUN npm install -g pnpm
 COPY --from=builder /app/dist ./dist
 COPY package*.json ./
 
-RUN npm install --production
+RUN pnpm install --production
 
 EXPOSE 3000
-
-CMD ["npm", "run", "serve"]
+CMD ["pnpm", "run", "serve"]
