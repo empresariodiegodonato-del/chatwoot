@@ -1,8 +1,11 @@
+# Stage 1: Build
 FROM node:18-alpine AS builder
+
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
+RUN npm install -g vite
 
 COPY . .
 RUN npm run build
@@ -16,4 +19,4 @@ COPY package*.json ./
 RUN npm install --production
 
 EXPOSE 3000
-CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "start"]
