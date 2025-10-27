@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build
+RUN pnpm install && pnpm run build
 
 # Stage 2 - Run
 FROM node:18-alpine
